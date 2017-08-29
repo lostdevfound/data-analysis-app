@@ -7,4 +7,4 @@ def homepage():
     return "hello world"
 
 if __name__ == "__main__":
-    app.run(debug=true, use_reloader=true)
+    app.run(debug=True, use_reloader=True)
