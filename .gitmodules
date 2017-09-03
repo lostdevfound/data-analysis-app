@@ -1,0 +1,3 @@
+[submodule "data_tech_analysis"]
+	path = data_tech_analysis
+	url = https://github.com/lostdevfound/data_tech_analysis.git

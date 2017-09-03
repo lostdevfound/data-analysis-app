@@ -1,1 +1,1 @@
-web: gunicorn data-analysis-app:data-analysis-app --log-file=-
+web: gunicorn data-analysis-app:app --log-file=-
