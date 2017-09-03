@@ -2,40 +2,61 @@
 {% block content %}
 <div class="container-fluid text-center">
     <div class="row content">
-        <div class="col-sm-2 sidenav">
-            ###
+        <div class="row">
+            <div class="col-sm-12">
+                    <form action="/calculate">
+                        <div class="form-inline">
+                            Select data
+                            <select class="form-control">
+                                <option value="1">#1</option>
+                                <option value="2">#2</option>
+                                <option value="3">#3</option>
+                            </select>
+                            <input type="submit">
+                        </div>
+                    </form>
+            </div>
         </div>
-        <div class="col-sm-9 text-left">
-            <div class="row">
-                <div class="col-sm-12 center-block">
+        </div>
+        <div class="row">
+            <!-- Column with parameters -->
+            <div class="col-sm-2 sidenav">
+                Params
+            </div>
 
-                    <div class="row">
-                        <div class="col-sm-12 center-block">
-                            <h3> Fourier Analysis <small> Use Fourier Analysis to fit the data, decompose it into frequencies and amplitudes </small> </h3>
-                            {{ origPlot|safe }}
+            <!-- Graphs column -->
+            <div class="col-sm-9 text-left">
+                <div class="row">
+                    <div class="col-sm-12 center-block">
+
+                        <div class="row">
+                            <div class="col-sm-12 center-block">
+                                <h3> Fourier Analysis <small> Use Fourier Analysis to fit the data, decompose it into frequencies and amplitudes </small> </h3>
+                                {{ origPlot|safe }}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-sm-6 center-block">
-                            {{ ampPlot|safe }}
-                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 center-block">
+                                {{ ampPlot|safe }}
+                            </div>
 
-                        <div class="col-sm-6 center-block">
-                            {{ freqPlot|safe }}
+                            <div class="col-sm-6 center-block">
+                                {{ freqPlot|safe }}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-sm-12 text-center" text-align:none>
-                    ###
+                <div class="row">
+                    <div class="col-sm-12 text-center" text-align:none>
+                        <p>Some text at the bottom</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-1 center-block">
-            ####
+            <!-- Column at the right -->
+            <div class="col-sm-1 sidenav center-block">
+            </div>
         </div>
     </div>
 </div>
