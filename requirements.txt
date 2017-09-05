@@ -1,2 +1,6 @@
-Flask
+Flask==0.12.2
+Jinja2==2.9.6
+numpy==1.12.1
+bokeh==0.12.5
+sympy==1.0
 gunicorn
