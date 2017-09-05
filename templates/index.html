@@ -18,12 +18,17 @@
         </div>
         <div class="row">
             <!-- Column with parameters -->
-            <div class="col-sm-2 sidenav">
-                Params
+            <div id="paramsBlock"class="col-sm-2 sidenav">
+                <!-- parameters could be here -->
             </div>
 
             <!-- Graphs column -->
             <div class="col-sm-9 text-left">
+                <p> This webapp runs Fourier Analysis on the selected data. Fourier Analysis describes general functions as a sum of simpler trigonometric functions.
+                    The implemented approach works well with continuous, non differentiable and discrete data. The process starts from synthesizing an analytical function which fits the data.
+                    The generated function is decomposed into waves of different frequencies and amplitudes.
+                    Observing the magnitudes and frequencies one can find periodic patterns such as seasonality and linear trends over time domain.
+                </p>
                 <div class="row">
                     <div id="graphBlock" class="col-sm-12 center-block">
 
@@ -38,11 +43,15 @@
                         <div class="row">
                             <div class="col-sm-12 center-block">
                                 <h3> Fourier Analysis <small> Use Fourier Analysis to fit the data, decompose it into frequencies and amplitudes </small> </h3>
+                                <div id="fourierParams" class="form-inline">
+                                    <p> Approximation value = <p id="aproxValue">10</p> </p>
+                                    <input id="fourierN" value="10" type="range" min="1" max="30" step="1">
+                                </div>
                                 <!-- Plot data -->
-                                <div id="origPlotDiv">
+                                <div class="bokehDivBloc" id="origPlotDiv">
                                     <!-- {{ origPlot|safe }} -->
                                 </div>
-                                <div id="origPlotScript">
+                                <div class="bokehScriptBlock" id="origPlotScript">
                                     <!-- {{ origScript|safe }} -->
                                 </div>
 
@@ -52,20 +61,20 @@
                         <div class="row">
                             <div class="col-sm-6 center-block">
                                 <!-- Plot data -->
-                                <div id="ampPlotDiv">
+                                <div class="bokehDivBloc" id="ampPlotDiv">
                                     <!-- {{ ampPlot|safe }} -->
                                 </div>
-                                <div id="ampPlotScript">
+                                <div class="bokehScriptBlock" id="ampPlotScript">
                                     <!-- {{ ampScript|safe }} -->
                                 </div>
                             </div>
 
                             <div class="col-sm-6 center-block">
                                 <!-- Plot data -->
-                                <div id="freqPlotDiv">
+                                <div class="bokehDivBloc" id="freqPlotDiv">
                                     <!-- {{ freqPlot|safe }} -->
                                 </div>
-                                <div id="freqPlotScript">
+                                <div class="bokehScriptBlock" id="freqPlotScript">
                                     <!-- {{ freqScript|safe }} -->
                                 </div>
                             </div>

@@ -15,6 +15,7 @@ $( document ).ready(function() {
     	        $('#freqPlotDiv').html(data.freqPlotDiv);
         		$('#freqPlotScript').html(data.freqPlotScript);
                 $('#graphBlock').css('display','initial');
+                $('#paramsBlock').css('display','initial');
 
                 if (selectionValue == 'Stock') {
                     $('#origDataText').html('Apple Inc stock');
@@ -27,8 +28,30 @@ $( document ).ready(function() {
                 }
                 },
     	    error: function(error){
-    		console.log(error);
+        		console.log(error);
     	    }
-            })
         })
+    });
+    $('#fourierN').on("change", function(){
+        var n = $('#fourierN').val();
+        var selectionValue = $('#selectData').val();
+        $.ajax({
+            type: "POST",
+            url: '/update_fourier',
+            data: {fourierN: n, selectData: selectionValue},
+            success: function(data) {
+                $('#origPlotDiv').html(data.origPlotDiv);
+        		$('#origPlotScript').html(data.origPlotScript);
+                $('#ampPlotDiv').html(data.ampPlotDiv);
+                $('#ampPlotScript').html(data.ampPlotScript);
+                $('#freqPlotDiv').html(data.freqPlotDiv);
+                $('#freqPlotScript').html(data.freqPlotScript);
+                $('#aproxValue').html(n)
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    });
+
 });
