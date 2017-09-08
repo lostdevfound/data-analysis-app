@@ -1,9 +1,9 @@
 $( document ).ready(function() {
-    $("#loadButton").on("click", function(){
+    $("#computeButton").on("click", function(){
         var selectionValue = $('#selectData').val();
     	$.ajax({
     	    type: "POST",
-    	    url: '/handle_data',
+    	    url: '/compute',
             data: {selectData: selectionValue},
     	    success: function(data){
     	        $('#firstPlotDiv').html(data.firstPlotDiv);
@@ -14,8 +14,14 @@ $( document ).ready(function() {
         		$('#ampPlotScript').html(data.ampPlotScript);
     	        $('#freqPlotDiv').html(data.freqPlotDiv);
         		$('#freqPlotScript').html(data.freqPlotScript);
+    	        $('#trandPlotDiv').html(data.trandPlotDiv);
+        		$('#trandPlotScript').html(data.trandPlotScript);
+                $('#trandPlotDiv').html(data.trandPlotDiv);
+                $('#trandPlotScript').html(data.trandPlotScript);
                 $('#graphBlock').css('display','initial');
                 $('#paramsBlock').css('display','initial');
+                $('#aproxValue').html(1)
+                $('#fourierN').val(1)
 
                 if (selectionValue == 'Stock') {
                     $('#origDataText').html('Apple Inc stock');
@@ -46,6 +52,8 @@ $( document ).ready(function() {
                 $('#ampPlotScript').html(data.ampPlotScript);
                 $('#freqPlotDiv').html(data.freqPlotDiv);
                 $('#freqPlotScript').html(data.freqPlotScript);
+                $('#trandPlotDiv').html(data.trandPlotDiv);
+                $('#trandPlotScript').html(data.trandPlotScript);
                 $('#aproxValue').html(n)
             },
             error: function(error){

@@ -20,12 +20,15 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 def homepage():
     return render_template('index.html', js_resources=INLINE.render_js(), css_resources=INLINE.render_css())
 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/handle_data', methods=["POST", "GET"])
-def handle_data():
+
+@app.route('/compute', methods=["POST", "GET"])
+def compute():
+    """ The method is called with the Compute button is pressed"""
 
     timeData = []
     valueData = []
@@ -47,8 +50,8 @@ def handle_data():
     firstPlot = figure(title="{}".format(dataOption),plot_width=400, plot_height=200,
                        toolbar_location=None, responsive=True, x_axis_type='datetime',
                        tools="pan,wheel_zoom")
-    firstPlot.line(timeData, valueData, legend="Original data", line_width=3)
-    firstPlot.circle(timeData, valueData, size=7, fill_color='White',line_width=3, line_dash='solid')
+    firstPlot.line(timeData, valueData, legend="Original data",color='green', line_width=3)
+    firstPlot.circle(timeData, valueData, size=7, fill_color='White',color='green',line_width=3, line_dash='solid')
     firstPlot.xaxis.formatter=DatetimeTickFormatter(formats=dict(
                                                                  seconds=["%d %B %Y"],
                                                                  minutes=["%d %B %Y"],
@@ -57,17 +60,18 @@ def handle_data():
                                                                  months=["%d %b %Y"],
                                                                  years=["%d %b %Y"]))
 
-    # format the x axis
     firstScript, firstDiv = components(firstPlot,INLINE)
-    # get the fourier analysis graphs
-    fourierGraphs= fourierGraph(valueData)
+
+    #### Get the Fourier Analysis graph elements####
+    fourierGraphs= fourierGraph(valueData, 1)
     origScript = fourierGraphs[0]
     origDiv = fourierGraphs[1]
     ampScript = fourierGraphs[2]
     ampDiv = fourierGraphs[3]
     freqScript = fourierGraphs[4]
     freqDiv =fourierGraphs[5]
-
+    trandScript = fourierGraphs[6]
+    trandDiv =fourierGraphs[7]
     return jsonify(
                    firstPlotDiv = firstDiv,
                    firstPlotScript = firstScript,
@@ -77,6 +81,8 @@ def handle_data():
                    freqPlotScript = freqScript,
                    ampPlotDiv = ampDiv,
                    ampPlotScript = ampScript,
+                   trandPlotDiv = trandDiv,
+                   trandPlotScript = trandScript,
                    js_resources=INLINE.render_js(),
                    css_resources=INLINE.render_css()
                    )
@@ -84,6 +90,8 @@ def handle_data():
 
 @app.route('/update_fourier', methods=["POST", "GET"])
 def update_fourier():
+    """ The method is called when the slider is changed """
+
     # get the form values and check it
     dataOption = request.form['selectData']
     fourierN = int(request.form['fourierN'])
@@ -104,7 +112,7 @@ def update_fourier():
     timeData = [datum[0] for datum in data]
     valueData = [datum[1] for datum in data]
 
-
+    #### Get the Fourier Analysis graph elements####
     fourierGraphs= fourierGraph(valueData, fourierN)
     origScript = fourierGraphs[0]
     origDiv = fourierGraphs[1]
@@ -112,6 +120,8 @@ def update_fourier():
     ampDiv = fourierGraphs[3]
     freqScript = fourierGraphs[4]
     freqDiv =fourierGraphs[5]
+    trandScript = fourierGraphs[6]
+    trandDiv =fourierGraphs[7]
     return jsonify(
                    origPlotDiv = origDiv,
                    origPlotScript = origScript,
@@ -119,14 +129,17 @@ def update_fourier():
                    freqPlotScript = freqScript,
                    ampPlotDiv = ampDiv,
                    ampPlotScript = ampScript,
+                   trandPlotDiv = trandDiv,
+                   trandPlotScript = trandScript,
                    js_resources=INLINE.render_js(),
                    css_resources=INLINE.render_css()
                    )
 
 
 def fourierGraph(ivalueData=None, N=10):
+    """ The computes the fourier graphs and outputs the tuple of scripts and divs """
     valueData = ivalueData
-    # create a plot
+    #### Create a plot ####
     origPlot = figure(title="Fourier curve fitting", plot_width=400, plot_height=200, toolbar_location=None, responsive=True, tools="pan,wheel_zoom")
     origPlot.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
     origPlot.yaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
@@ -136,14 +149,14 @@ def fourierGraph(ivalueData=None, N=10):
     # Original Line
     xline = [i for i in range(len(valueData))]
     origPlot.line(xline, valueData, legend="Original data", color='green', line_width=3, line_dash='dashed')
-    origPlot.circle(xline, valueData,fill_color='White', size=7, color='green', line_width=3, line_dash='solid')
+    # origPlot.circle(xline, valueData,fill_color='White', size=7, color='green', line_width=3, line_dash='solid')
     # Fourier Line
     xs = np.arange(0, len(xline), .3)
     origPlot.line(xs, series(xs), legend="Fourier Trig Series n={}".format(N), line_width=3)
     # Legend color setup
     origPlot.legend.background_fill_color = "LightGray"
 
-    # Amplitude plot
+    #### Amplitude plot ####
     coef, trigFuncs = zip(*trigTerms)
     trigFuncsString = [str(trigfunc) for trigfunc in trigFuncs[2:]]
     ampPlot = figure(title="Frequency Amp", plot_width=400, plot_height=200, toolbar_location=None, x_range=trigFuncsString, responsive=True)
@@ -156,28 +169,34 @@ def fourierGraph(ivalueData=None, N=10):
     ampPlot.ray(x=0, y=0, angle=0, length=(N*2 + 2), line_width=3, line_color="purple", line_alpha=0.5)
     ampPlot.segment(x0=x0, y0=0, x1=x0, y1=coef[2:], line_width=3)
 
-    # Frequency plot
+    #### Frequency plot ####
     freqPlot = figure(title="Frequency decomposition", plot_width=400, plot_height=200, toolbar_location=None, responsive=True)
+    freqPlot.xaxis.minor_tick_line_color = None
+    freqPlot.yaxis.minor_tick_line_color = None
+
 
     x = sp.Symbol('x')
     numLines = len(trigFuncs)
     color_pallete = Spectral11*numLines
 
-    funcList = []
-
     for i in range(numLines):
+        # ignore the first two terms as they are not trig functions but numbers
         if i < 2:
             continue
         f = sp.lambdify(x, trigFuncs[i], modules=['numpy'])
+        # plot the functions
         freqPlot.line(xs,coef[i]*f(xs), color=color_pallete[i])
 
-    freqPlot.xaxis.minor_tick_line_color = None
-    freqPlot.yaxis.minor_tick_line_color = None
+    #### Convolve begin #####
+    trandPlot = figure(title="Trend Plot",plot_width=400, plot_height=200,responsive=True)
+
+    trandPlot.line(xs, series(xs))
 
     origScript, origDiv = components(origPlot,INLINE)
     ampScript, ampDiv = components(ampPlot, INLINE)
     freqScript, freqDiv = components(freqPlot, INLINE)
-    return (origScript, origDiv,ampScript, ampDiv,freqScript, freqDiv)
+    trandScript, trandDiv = components(trandPlot, INLINE)
+    return (origScript, origDiv,ampScript, ampDiv,freqScript, freqDiv, trandScript, trandDiv)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
