@@ -8,8 +8,8 @@
                         <p> Select input </p>
                         <select id="selectData" class="form-control custform">
                             <option value="Stock">Stock Data</option>
-                            <option value="Weather">Weather Data</option>
-                            <option value="Random">Random data</option>
+                            <option value="Weather">Work in progress</option>
+                            <option value="Random">Work in progress</option>
                         </select>
                         <button class="btn btn-primary" id="computeButton"type="button">Compute</button>
                 </div>
@@ -52,7 +52,7 @@
                                         <small>By dragging the slider towards higher values the blue colored function will better fit the data.</small>
                                     </p>
                                     <div class="well">
-                                        <input id="fourierN" value="1" type="range" min="1" max="30" step="1">
+                                        <input id="fourierN" value="1" type="range" min="1" max="40" step="1">
                                     </div>
                                 </div>
                                 <!-- Plot data -->
@@ -91,25 +91,25 @@
                             <div class="col-sm-12 center-block">
                                 <h3> Trend
                                     <small>
-                                        The algorithm breakes the generated analytical function into different waves according to their frequencies.
-                                        By tunning the frequencies one can create a Trend line or Detrend the data.
+                                        The algorithm decomposes the analytical function into different waves based on their frequencies.
+                                        By tunning the frequencies one can denoise or detrend the data.
                                     </small>
                                 </h3>
                                 <div id="fourierParams" class="form-inline">
-                                    <p> Convolution value = <p id="convolutionValue">1</p></p>
+                                    <p> Denoise value = <p id="convolutionValue">0</p></p>
                                     <div class="well">
-                                        <input id="convolutionSlider" value="1" type="range" min="1" max="30" step="1">
+                                        <input id="convolutionSlider" value="0" type="range" min="0" max="10" step="1">
                                     </div>
-                                    <p> Detrend value = <p id="detrendValue">1</p></p>
+                                    <p> Detrend value = <p id="detrendValue">0</p></p>
                                     <div class="well">
-                                        <input id="detrendSlider" value="1" type="range" min="1" max="30" step="1">
+                                        <input id="detrendSlider" value="0" type="range" min="0" max="10" step="1">
                                     </div>
                                 </div>
-                                <div class="bokehDivBlock" id="trandPlotDiv">
-                                    <!-- trandplot div -->
+                                <div class="bokehDivBlock" id="trendPlotDiv">
+                                    <!-- trendplot div -->
                                 </div>
-                                <div class="bokehScriptBlock" id="trandPlotScript">
-                                    <!-- trandplot script -->
+                                <div class="bokehScriptBlock" id="trendPlotScript">
+                                    <!-- trendplot script -->
                                 </div>
                             </div>
                         </div>

@@ -47,9 +47,9 @@ def compute():
     valueData = [datum[1] for datum in data]
 
     # create a plot for the original data
-    firstPlot = figure(title="{}".format(dataOption),plot_width=400, plot_height=200,
-                       toolbar_location=None, responsive=True, x_axis_type='datetime',
-                       tools="pan,wheel_zoom")
+    firstPlot = figure(title="{}".format(dataOption),plot_width=400, plot_height=200, responsive=True, x_axis_type='datetime')
+    firstPlot.toolbar.logo = None
+
     firstPlot.line(timeData, valueData, legend="Original data",color='green', line_width=3)
     firstPlot.circle(timeData, valueData, size=7, fill_color='White',color='green',line_width=3, line_dash='solid')
     firstPlot.xaxis.formatter=DatetimeTickFormatter(formats=dict(
@@ -70,8 +70,8 @@ def compute():
     ampDiv = fourierGraphs[3]
     freqScript = fourierGraphs[4]
     freqDiv =fourierGraphs[5]
-    trandScript = fourierGraphs[6]
-    trandDiv =fourierGraphs[7]
+    trendScript = fourierGraphs[6]
+    trendDiv =fourierGraphs[7]
     return jsonify(
                    firstPlotDiv = firstDiv,
                    firstPlotScript = firstScript,
@@ -81,8 +81,8 @@ def compute():
                    freqPlotScript = freqScript,
                    ampPlotDiv = ampDiv,
                    ampPlotScript = ampScript,
-                   trandPlotDiv = trandDiv,
-                   trandPlotScript = trandScript,
+                   trendPlotDiv = trendDiv,
+                   trendPlotScript = trendScript,
                    js_resources=INLINE.render_js(),
                    css_resources=INLINE.render_css()
                    )
@@ -96,7 +96,7 @@ def update_fourier():
     dataOption = request.form['selectData']
     fourierN = int(request.form['fourierN'])
     # check the client side data
-    if dataOption != 'Stock' or dataOption != 'Weather' or dataOption != 'Random':
+    if dataOption != 'Stock' and dataOption != 'Weather' and dataOption != 'Random':
         homepage()
     if fourierN > 40 or fourierN < 0:
         homepage()
@@ -120,8 +120,8 @@ def update_fourier():
     ampDiv = fourierGraphs[3]
     freqScript = fourierGraphs[4]
     freqDiv =fourierGraphs[5]
-    trandScript = fourierGraphs[6]
-    trandDiv =fourierGraphs[7]
+    trendScript = fourierGraphs[6]
+    trendDiv =fourierGraphs[7]
     return jsonify(
                    origPlotDiv = origDiv,
                    origPlotScript = origScript,
@@ -129,18 +129,69 @@ def update_fourier():
                    freqPlotScript = freqScript,
                    ampPlotDiv = ampDiv,
                    ampPlotScript = ampScript,
-                   trandPlotDiv = trandDiv,
-                   trandPlotScript = trandScript,
+                   trendPlotDiv = trendDiv,
+                   trendPlotScript = trendScript,
                    js_resources=INLINE.render_js(),
                    css_resources=INLINE.render_css()
                    )
 
 
+@app.route('/update_trend', methods=["POST", "GET"])
+def update_trend():
+
+    # get the form values and check it
+    dataOption = request.form['selectData']
+    fourierN = int(request.form['fourierN'])
+    convolutionType = request.form['type']
+    convFactor = float(request.form['convolutionFactor'])
+
+    legend = 'denoised data'
+
+    if convolutionType == 'lowFreq':
+        convFactor = convFactor / 100
+        legend = 'detrended data'
+
+    # check the client side data
+    if dataOption != 'Stock' and dataOption != 'Weather' and dataOption != 'Random':
+        homepage()
+
+    if fourierN > 40 or fourierN < 0:
+        homepage()
+
+    timeData = []
+    valueData = []
+
+    # If the selection is Stock
+    if (dataOption == 'Stock'):
+        with open('data/stock.json') as json_data:
+            data = json.load(json_data)
+
+    valueData = [datum[1] for datum in data]
+
+    series, trigTerms = ta.fourierTrigSeries(valueData, fourierN)
+    convolvedSeries, convolvedTrigTerms = ta.convolveFourierSeries(trigTerms, convFactor, convolutionType )
+
+    x = sp.Symbol('x')
+    xs = np.arange(0, len(valueData), .3)
+
+    trendPlot = figure(title="Trend Plot",plot_width=400, plot_height=200,responsive=True)
+    trendPlot.toolbar.logo = None
+    trendPlot.line(xs, convolvedSeries(xs), legend= legend, line_width=3)
+    trendScript, trendDiv = components(trendPlot, INLINE)
+
+    return jsonify(trendPlotDiv=trendDiv ,
+                   trendPlotScript=trendScript,
+                   js_resources=INLINE.render_js(),
+                   css_resources=INLINE.render_css()
+
+    )
+
 def fourierGraph(ivalueData=None, N=10):
     """ The computes the fourier graphs and outputs the tuple of scripts and divs """
     valueData = ivalueData
     #### Create a plot ####
-    origPlot = figure(title="Fourier curve fitting", plot_width=400, plot_height=200, toolbar_location=None, responsive=True, tools="pan,wheel_zoom")
+    origPlot = figure(title="Fourier curve fitting", plot_width=400, plot_height=200, responsive=True)
+    origPlot.toolbar.logo = None
     origPlot.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
     origPlot.yaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
 
@@ -159,7 +210,8 @@ def fourierGraph(ivalueData=None, N=10):
     #### Amplitude plot ####
     coef, trigFuncs = zip(*trigTerms)
     trigFuncsString = [str(trigfunc) for trigfunc in trigFuncs[2:]]
-    ampPlot = figure(title="Frequency Amp", plot_width=400, plot_height=200, toolbar_location=None, x_range=trigFuncsString, responsive=True)
+    ampPlot = figure(title="Frequency Amp", plot_width=400, plot_height=200, x_range=trigFuncsString, responsive=True)
+    ampPlot.toolbar.logo = None
     ampPlot.yaxis.minor_tick_line_color = None
     ampPlot.circle(trigFuncsString, coef[2:], line_width=3, size=6)
     ampPlot.xaxis.major_label_orientation = math.pi/4
@@ -170,7 +222,8 @@ def fourierGraph(ivalueData=None, N=10):
     ampPlot.segment(x0=x0, y0=0, x1=x0, y1=coef[2:], line_width=3)
 
     #### Frequency plot ####
-    freqPlot = figure(title="Frequency decomposition", plot_width=400, plot_height=200, toolbar_location=None, responsive=True)
+    freqPlot = figure(title="Frequency decomposition", plot_width=400, plot_height=200, responsive=True)
+    freqPlot.toolbar.logo = None
     freqPlot.xaxis.minor_tick_line_color = None
     freqPlot.yaxis.minor_tick_line_color = None
 
@@ -188,15 +241,15 @@ def fourierGraph(ivalueData=None, N=10):
         freqPlot.line(xs,coef[i]*f(xs), color=color_pallete[i])
 
     #### Convolve begin #####
-    trandPlot = figure(title="Trend Plot",plot_width=400, plot_height=200,responsive=True)
+    trendPlot = figure(title="Trend Plot",plot_width=400, plot_height=200,responsive=True)
 
-    trandPlot.line(xs, series(xs))
+    trendPlot.line(xs, series(xs), line_width=3)
 
     origScript, origDiv = components(origPlot,INLINE)
     ampScript, ampDiv = components(ampPlot, INLINE)
     freqScript, freqDiv = components(freqPlot, INLINE)
-    trandScript, trandDiv = components(trandPlot, INLINE)
-    return (origScript, origDiv,ampScript, ampDiv,freqScript, freqDiv, trandScript, trandDiv)
+    trendScript, trendDiv = components(trendPlot, INLINE)
+    return (origScript, origDiv,ampScript, ampDiv,freqScript, freqDiv, trendScript, trendDiv)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)

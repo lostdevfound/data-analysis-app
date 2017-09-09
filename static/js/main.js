@@ -14,10 +14,10 @@ $( document ).ready(function() {
         		$('#ampPlotScript').html(data.ampPlotScript);
     	        $('#freqPlotDiv').html(data.freqPlotDiv);
         		$('#freqPlotScript').html(data.freqPlotScript);
-    	        $('#trandPlotDiv').html(data.trandPlotDiv);
-        		$('#trandPlotScript').html(data.trandPlotScript);
-                $('#trandPlotDiv').html(data.trandPlotDiv);
-                $('#trandPlotScript').html(data.trandPlotScript);
+    	        $('#trendPlotDiv').html(data.trendPlotDiv);
+        		$('#trendPlotScript').html(data.trendPlotScript);
+                $('#trendPlotDiv').html(data.trendPlotDiv);
+                $('#trendPlotScript').html(data.trendPlotScript);
                 $('#graphBlock').css('display','initial');
                 $('#paramsBlock').css('display','initial');
                 $('#aproxValue').html(1)
@@ -52,9 +52,54 @@ $( document ).ready(function() {
                 $('#ampPlotScript').html(data.ampPlotScript);
                 $('#freqPlotDiv').html(data.freqPlotDiv);
                 $('#freqPlotScript').html(data.freqPlotScript);
-                $('#trandPlotDiv').html(data.trandPlotDiv);
-                $('#trandPlotScript').html(data.trandPlotScript);
+                $('#trendPlotDiv').html(data.trendPlotDiv);
+                $('#trendPlotScript').html(data.trendPlotScript);
                 $('#aproxValue').html(n)
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    });
+
+    $('#convolutionSlider').on('change', function() {
+        var selectionValue = $('#selectData').val();
+        var convFactor = $('#convolutionSlider').val()
+        var n = $('#fourierN').val();
+
+        $.ajax({
+            type: "POST",
+            url: '/update_trend',
+            data: {convolutionFactor: convFactor, selectData: selectionValue, fourierN: n, type: 'highFreq'},
+            success: function(data) {
+                $('#trendPlotDiv').html(data.trendPlotDiv);
+                $('#trendPlotScript').html(data.trendPlotScript);
+                $('#convolutionValue').html(convFactor);
+                $('#detrendSlider').val(0);
+                $('#detrendValue').html(0);
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    });
+
+    $('#detrendSlider').on('change', function() {
+        var selectionValue = $('#selectData').val();
+        var convFactor = $('#detrendSlider').val()
+        var n = $('#fourierN').val();
+
+        $.ajax({
+            type: "POST",
+            url: '/update_trend',
+            data: {convolutionFactor: convFactor, selectData: selectionValue, fourierN: n, type: 'lowFreq'},
+            success: function(data) {
+                $('#trendPlotDiv').html(data.trendPlotDiv);
+                $('#trendPlotScript').html(data.trendPlotScript);
+                $('#detrendValue').html(convFactor);
+                $('#convolutionSlider').val(0);
+                $('#convolutionValue').html(0);
+
             },
             error: function(error){
                 console.log(error);
