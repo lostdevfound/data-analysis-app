@@ -29,9 +29,6 @@ $( document ).ready(function() {
                 else if (selectionValue == 'Weather') {
                     $('#origDataText').html('British Columbia. Mean temperature per month');
                 }
-                // else if (selectionValue == 'Random') {
-                //     $('#origDataText').html('Random data');
-                // }
                 },
     	    error: function(error){
         		console.log(error);
@@ -45,6 +42,9 @@ $( document ).ready(function() {
             type: "POST",
             url: '/update_fourier',
             data: {fourierN: n, selectData: selectionValue},
+            beforeSend: function(){
+                $('.loader').show()
+            },
             success: function(data) {
                 $('#origPlotDiv').html(data.origPlotDiv);
         		$('#origPlotScript').html(data.origPlotScript);
@@ -54,7 +54,8 @@ $( document ).ready(function() {
                 $('#freqPlotScript').html(data.freqPlotScript);
                 $('#trendPlotDiv').html(data.trendPlotDiv);
                 $('#trendPlotScript').html(data.trendPlotScript);
-                $('#aproxValue').html(n)
+                $('#aproxValue').html(n);
+                $('.loader').hide()
             },
             error: function(error){
                 console.log(error);
@@ -71,12 +72,16 @@ $( document ).ready(function() {
             type: "POST",
             url: '/update_trend',
             data: {convolutionFactor: convFactor, selectData: selectionValue, fourierN: n, type: 'highFreq'},
+            beforeSend: function(){
+                $('.loader').show()
+            },
             success: function(data) {
                 $('#trendPlotDiv').html(data.trendPlotDiv);
                 $('#trendPlotScript').html(data.trendPlotScript);
                 $('#convolutionValue').html(convFactor);
                 $('#detrendSlider').val(0);
                 $('#detrendValue').html(0);
+                $('.loader').hide()
             },
             error: function(error){
                 console.log(error);
@@ -93,13 +98,16 @@ $( document ).ready(function() {
             type: "POST",
             url: '/update_trend',
             data: {convolutionFactor: convFactor, selectData: selectionValue, fourierN: n, type: 'lowFreq'},
+            beforeSend: function(){
+                $('.loader').show()
+            },
             success: function(data) {
                 $('#trendPlotDiv').html(data.trendPlotDiv);
                 $('#trendPlotScript').html(data.trendPlotScript);
                 $('#detrendValue').html(convFactor);
                 $('#convolutionSlider').val(0);
                 $('#convolutionValue').html(0);
-
+                $('.loader').hide()
             },
             error: function(error){
                 console.log(error);

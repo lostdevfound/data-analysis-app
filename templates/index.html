@@ -56,8 +56,11 @@
                                     </div>
                                 </div>
                                 <!-- Plot data -->
-                                <div class="bokehDivBloc" id="origPlotDiv">
-                                    <!-- {{ origPlot|safe }} -->
+                                <div class="graphContainer">
+                                    <div class="loader"></div>
+                                    <div class="bokehDivBloc" id="origPlotDiv">
+                                        <!-- {{ origPlot|safe }} -->
+                                    </div>
                                 </div>
                                 <div class="bokehScriptBlock" id="origPlotScript">
                                     <!-- {{ origScript|safe }} -->
@@ -105,8 +108,11 @@
                                         <input id="detrendSlider" value="0" type="range" min="0" max="10" step="1">
                                     </div>
                                 </div>
-                                <div class="bokehDivBlock" id="trendPlotDiv">
-                                    <!-- trendplot div -->
+                                <div class="graphContainer2">
+                                    <div class="loader"></div>
+                                    <div class="bokehDivBlock" id="trendPlotDiv">
+                                        <!-- trendplot div -->
+                                    </div>
                                 </div>
                                 <div class="bokehScriptBlock" id="trendPlotScript">
                                     <!-- trendplot script -->
