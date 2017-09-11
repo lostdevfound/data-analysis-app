@@ -63,7 +63,7 @@ def compute():
     firstScript, firstDiv = components(firstPlot,INLINE)
 
     #### Get the Fourier Analysis graph elements####
-    fourierGraphs= fourierGraph(valueData, 1)
+    fourierGraphs= fourierGraph(valueData, 2)
     origScript = fourierGraphs[0]
     origDiv = fourierGraphs[1]
     ampScript = fourierGraphs[2]
@@ -148,7 +148,7 @@ def update_trend():
     legend = 'denoised data'
 
     if convolutionType == 'lowFreq':
-        convFactor = convFactor / 100
+        convFactor = convFactor / 200
         legend = 'detrended data'
 
     # check the client side data

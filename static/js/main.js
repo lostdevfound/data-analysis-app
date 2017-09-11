@@ -20,8 +20,8 @@ $( document ).ready(function() {
                 $('#trendPlotScript').html(data.trendPlotScript);
                 $('#graphBlock').css('display','initial');
                 $('#paramsBlock').css('display','initial');
-                $('#aproxValue').html(1)
-                $('#fourierN').val(1)
+                $('#aproxValue').html(2)
+                $('#fourierN').val(2)
 
                 if (selectionValue == 'Stock') {
                     $('#origDataText').html('Apple Inc stock');
