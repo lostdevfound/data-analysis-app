@@ -27,11 +27,11 @@ $( document ).ready(function() {
                     $('#origDataText').html('Apple Inc stock');
                 }
                 else if (selectionValue == 'Weather') {
-                    $('#origDataText').html('Weather data');
+                    $('#origDataText').html('British Columbia. Mean temperature per month');
                 }
-                else if (selectionValue == 'Random') {
-                    $('#origDataText').html('Random data');
-                }
+                // else if (selectionValue == 'Random') {
+                //     $('#origDataText').html('Random data');
+                // }
                 },
     	    error: function(error){
         		console.log(error);

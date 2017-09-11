@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Data Analysis app</title>
+    <title>Fourier Analysis app</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
@@ -16,6 +16,9 @@
     {{ js_resources|safe }}
     {{ css_resources|safe }}
     <style>
+        #instructions {
+            color: darkred;
+        }
         .bokehScriptBlock {
             display: none;
         }
@@ -25,7 +28,7 @@
         }
 
         #freqPlotDiv {
-            height: 180px;
+            height: 380px;
         }
 
         #ampPlotDiv {
@@ -123,17 +126,38 @@
             margin: auto;
             padding: 5%;
         }
+        @media only screen and (min-width: 500px) {
+            .row {
+                padding-bottom: 20px;
+            }
+
+            #origPlotDiv {
+                height: 350px;
+            }
+
+            #freqPlotDiv {
+                height: 650px;
+            }
+
+            #ampPlotDiv {
+                height: 370px;
+            }
+
+            #trendPlotDiv {
+                height: 320px;
+            }
+        }
         @media only screen and (min-width: 700px) {
             .row {
                 padding-bottom: 20px;
             }
 
             #origPlotDiv {
-                height: 300px;
+                height: 400px;
             }
 
             #freqPlotDiv {
-                height: 370px;
+                height: 770px;
             }
 
             #ampPlotDiv {
@@ -146,32 +170,49 @@
         }
 
 
-        @media only screen and (min-width: 760px) {
+        @media only screen and (min-width: 750px) {
             #origPlotDiv {
-                height: 275px;
+                height: 380px;
             }
 
             #freqPlotDiv {
-                height: 130px;
+                height: 450px;
             }
 
             #ampPlotDiv {
-                height: 130px;
+                height: 450px;
             }
 
             #trendPlotDiv {
-                height: 275px;
+                height: 755px;
             }
 
         }
 
+        @media only screen and (min-width: 768px) {
+            #origPlotDiv {
+                height: 340px;
+            }
+
+            #freqPlotDiv {
+                height: 210px;
+            }
+
+            #ampPlotDiv {
+                height: 135px;
+            }
+
+            #trendPlotDiv {
+                height: 340px;
+            }
+        }
         @media only screen and (min-width: 850px) {
             #origPlotDiv {
                 height: 340px;
             }
 
             #freqPlotDiv {
-                height: 135px;
+                height: 210px;
             }
 
             #ampPlotDiv {
@@ -188,7 +229,7 @@
                 height: 390px;
             }
             #freqPlotDiv {
-                height: 200px;
+                height: 270px;
             }
 
             #ampPlotDiv {
@@ -206,7 +247,7 @@
             }
 
             #freqPlotDiv {
-                height: 200px;
+                height: 290px;
             }
 
             #ampPlotDiv {
@@ -226,6 +267,10 @@
             #trendPlotDiv {
                 height: 470px;
             }
+
+            #freqPlotDiv {
+                height: 300px;
+            }
         }
 
         @media only screen and (min-width: 1355px) {
@@ -234,7 +279,7 @@
             }
 
             #freqPlotDiv {
-                height: 250px;
+                height: 380px;
             }
 
             #ampPlotDiv {
@@ -254,6 +299,10 @@
             #trendPlotDiv {
                 height: 580px;
             }
+
+            #freqPlotDiv {
+                height: 380px;
+            }
         }
 
 
@@ -263,11 +312,11 @@
             }
 
             #freqPlotDiv {
-                height: 350px;
+                height: 450px;
             }
 
             #ampPlotDiv {
-                height: 350px;
+                height: 450px;
             }
 
             #trendPlotDiv {
@@ -286,7 +335,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">Data Analysis App</a>
+      <a class="navbar-brand" href="/">Fourier Analysis App</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">

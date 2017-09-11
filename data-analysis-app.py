@@ -6,6 +6,7 @@ from bokeh.palettes import Spectral11
 from bokeh.resources import INLINE
 from bokeh.models import ColumnDataSource, AjaxDataSource, DatetimeTickFormatter
 import numpy as np
+import pandas as pd
 import math
 import sympy as sp
 import data_tech_analysis.tech_analysis as ta
@@ -30,22 +31,12 @@ def about():
 def compute():
     """ The method is called with the Compute button is pressed"""
 
-    timeData = []
-    valueData = []
-
     # get the form value and check it
     dataOption = request.form['selectData']
     if dataOption != 'Stock' or dataOption != 'Weather' or dataOption != 'Random':
         homepage()
 
-    # If the selection is Stock
-    if (dataOption == 'Stock'):
-        with open('data/stock.json') as json_data:
-            data = json.load(json_data)
-
-    timeData = [datum[0] for datum in data]
-    valueData = [datum[1] for datum in data]
-
+    timeData, valueData = dataSelection(dataOption)
     # create a plot for the original data
     firstPlot = figure(title="{}".format(dataOption),plot_width=400, plot_height=200, responsive=True, x_axis_type='datetime')
     firstPlot.toolbar.logo = None
@@ -101,16 +92,7 @@ def update_fourier():
     if fourierN > 40 or fourierN < 0:
         homepage()
 
-    timeData = []
-    valueData = []
-
-    # If the selection is Stock
-    if (dataOption == 'Stock'):
-        with open('data/stock.json') as json_data:
-            data = json.load(json_data)
-
-    timeData = [datum[0] for datum in data]
-    valueData = [datum[1] for datum in data]
+    timeData, valueData = dataSelection(dataOption)
 
     #### Get the Fourier Analysis graph elements####
     fourierGraphs= fourierGraph(valueData, fourierN)
@@ -161,12 +143,7 @@ def update_trend():
     timeData = []
     valueData = []
 
-    # If the selection is Stock
-    if (dataOption == 'Stock'):
-        with open('data/stock.json') as json_data:
-            data = json.load(json_data)
-
-    valueData = [datum[1] for datum in data]
+    timeData, valueData = dataSelection(dataOption)
 
     series, trigTerms = ta.fourierTrigSeries(valueData, fourierN)
     convolvedSeries, convolvedTrigTerms = ta.convolveFourierSeries(trigTerms, convFactor, convolutionType )
@@ -200,7 +177,6 @@ def fourierGraph(ivalueData=None, N=10):
     # Original Line
     xline = [i for i in range(len(valueData))]
     origPlot.line(xline, valueData, legend="Original data", color='green', line_width=3, line_dash='dashed')
-    # origPlot.circle(xline, valueData,fill_color='White', size=7, color='green', line_width=3, line_dash='solid')
     # Fourier Line
     xs = np.arange(0, len(xline), .3)
     origPlot.line(xs, series(xs), legend="Fourier Trig Series n={}".format(N), line_width=3)
@@ -210,7 +186,7 @@ def fourierGraph(ivalueData=None, N=10):
     #### Amplitude plot ####
     coef, trigFuncs = zip(*trigTerms)
     trigFuncsString = [str(trigfunc) for trigfunc in trigFuncs[2:]]
-    ampPlot = figure(title="Frequency Amp", plot_width=400, plot_height=200, x_range=trigFuncsString, responsive=True)
+    ampPlot = figure(title="Frequency Amp", plot_width=400, plot_height=200,x_range=trigFuncsString,responsive=True)
     ampPlot.toolbar.logo = None
     ampPlot.yaxis.minor_tick_line_color = None
     ampPlot.circle(trigFuncsString, coef[2:], line_width=3, size=6)
@@ -222,7 +198,7 @@ def fourierGraph(ivalueData=None, N=10):
     ampPlot.segment(x0=x0, y0=0, x1=x0, y1=coef[2:], line_width=3)
 
     #### Frequency plot ####
-    freqPlot = figure(title="Frequency decomposition", plot_width=400, plot_height=200, responsive=True)
+    freqPlot = figure(title="Frequency decomposition", plot_width=400, plot_height=400, responsive=True)
     freqPlot.toolbar.logo = None
     freqPlot.xaxis.minor_tick_line_color = None
     freqPlot.yaxis.minor_tick_line_color = None
@@ -250,6 +226,25 @@ def fourierGraph(ivalueData=None, N=10):
     freqScript, freqDiv = components(freqPlot, INLINE)
     trendScript, trendDiv = components(trendPlot, INLINE)
     return (origScript, origDiv,ampScript, ampDiv,freqScript, freqDiv, trendScript, trendDiv)
+
+
+def dataSelection(dataOption):
+    # If the selection is Stock
+    if dataOption == 'Stock':
+        with open('data/stock.json') as json_data:
+            data = json.load(json_data)
+        timeData = [datum[0] for datum in data]
+        valueData = [datum[1] for datum in data]
+
+    elif dataOption == 'Weather':
+        startDate = 150
+        df = pd.read_csv('data/bc_weather_data.csv', parse_dates=['Date'])
+        timeData = df['Date'].tolist()[startDate:]
+        timeData = [datum.date() for datum in timeData]
+        df = df.fillna(0)
+        valueData = df['Mean Temp'].tolist()[startDate:]
+
+    return (timeData, valueData)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
